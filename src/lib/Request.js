@@ -29,6 +29,10 @@ export class Request {
     return this.response.body.join('') || '';
   }
 
+  setRequestUrl(url) {
+    this.url = url;
+  }
+
   setRequestHeaders(headers) {
     this.request.headers = headers;
   }

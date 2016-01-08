@@ -11,7 +11,6 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 var express = require('express');
 var app = express();
 
-var Q = require('q');
 var debug = require('debug')('proxsy:ui');
 
 var uiDefaults = {
@@ -20,33 +19,36 @@ var uiDefaults = {
 };
 
 var ProxsyUI = exports.ProxsyUI = function () {
-  function ProxsyUI(options) {
+  function ProxsyUI() {
+    var options = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+
     _classCallCheck(this, ProxsyUI);
 
     // Set up options
     this.interface = options.interface || uiDefaults.interface;
     this.port = options.port || uiDefaults.port;
     this.app = app;
+
+    this.initRoutes();
   }
 
   _createClass(ProxsyUI, [{
+    key: 'initRoutes',
+    value: function initRoutes() {}
+  }, {
     key: 'listen',
-    value: function listen() {
+    value: function listen(cb) {
       var _this = this;
 
-      var deferred = Q.deferred();
-
-      this.app.listen(this.port, function () {
+      this.app.listen(this.port, function (err) {
 
         if (err) {
-          return deferred.reject(err);
+          return cb(err);
         }
 
         debug('Listening on ' + _this.interface + ':' + _this.port);
-        deferred.resolve();
+        return cb();
       });
-
-      return deferred.promise();
     }
   }]);
 

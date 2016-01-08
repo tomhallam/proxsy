@@ -3,7 +3,7 @@ const url = require('url');
 const debug = require('debug')('proxsy:main');
 const uuid = require('node-uuid');
 const StringDecoder = require('string_decoder').StringDecoder;
-const Stream = require('stream');
+const Table = require('cli-table');
 
 import {GenericTimer} from './Utils';
 import {Request} from './Request';
@@ -15,6 +15,16 @@ export class Proxsy {
   }
 
   formatResult(request) {
+
+    const table = new Table({
+      head: ['Url', 'Content-Type', 'Content-Length', 'Response Time'],
+      colWidths: [100, 100, 50, 50]
+    });
+
+    table.push([request.url, request.response.headers['content-type'], request.response.length.toString(), request.timings.timeToCompletedRequest.toString()])
+    //console.log([request.url, request.response['content-type'], request.response.length.toString(), request.timings.timeToCompletedRequest.toString()]);
+
+    console.log(table.toString())
 
   }
 
@@ -45,6 +55,9 @@ export class Proxsy {
     // Create the request in the registry
     this.requests[requestId] = new Request(requestId);
     var thisRequest = this.requests[requestId];
+
+    // Assign the request Url
+    thisRequest.setRequestUrl(req.url);
 
     // Assign the request headers
     thisRequest.setRequestHeaders(req.headers);

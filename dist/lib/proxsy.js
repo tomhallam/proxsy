@@ -18,7 +18,7 @@ var url = require('url');
 var debug = require('debug')('proxsy:main');
 var uuid = require('node-uuid');
 var StringDecoder = require('string_decoder').StringDecoder;
-var Stream = require('stream');
+var Table = require('cli-table');
 
 var Proxsy = exports.Proxsy = function () {
   function Proxsy() {
@@ -29,7 +29,18 @@ var Proxsy = exports.Proxsy = function () {
 
   _createClass(Proxsy, [{
     key: 'formatResult',
-    value: function formatResult(request) {}
+    value: function formatResult(request) {
+
+      var table = new Table({
+        head: ['Url', 'Content-Type', 'Content-Length', 'Response Time'],
+        colWidths: [100, 100, 50, 50]
+      });
+
+      table.push([request.url, request.response.headers['content-type'], request.response.length.toString(), request.timings.timeToCompletedRequest.toString()]);
+      //console.log([request.url, request.response['content-type'], request.response.length.toString(), request.timings.timeToCompletedRequest.toString()]);
+
+      console.log(table.toString());
+    }
   }, {
     key: 'handleRequest',
     value: function handleRequest(req, res) {
@@ -60,6 +71,9 @@ var Proxsy = exports.Proxsy = function () {
       // Create the request in the registry
       this.requests[requestId] = new _Request.Request(requestId);
       var thisRequest = this.requests[requestId];
+
+      // Assign the request Url
+      thisRequest.setRequestUrl(req.url);
 
       // Assign the request headers
       thisRequest.setRequestHeaders(req.headers);

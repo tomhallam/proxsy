@@ -1,7 +1,6 @@
 const express = require('express');
 const app = express();
 
-const Q = require('q');
 const debug = require('debug')('proxsy:ui');
 
 const uiDefaults = {
@@ -11,31 +10,33 @@ const uiDefaults = {
 
 export class ProxsyUI {
 
-  constructor(options) {
+  constructor(options = {}) {
 
     // Set up options
     this.interface = options.interface || uiDefaults.interface;
     this.port = options.port || uiDefaults.port;
     this.app = app;
 
+    this.initRoutes();
+
   }
 
-  listen() {
+  initRoutes() {
 
-    let deferred = Q.deferred(); 
+  }
 
-    this.app.listen(this.port, () => {
+  listen(cb) {
+
+    this.app.listen(this.port, (err) => {
 
       if(err) {
-        return deferred.reject(err);
+        return cb(err);
       }
 
       debug(`Listening on ${this.interface}:${this.port}`);
-      deferred.resolve();
+      return cb();
 
     });
-
-    return deferred.promise();
 
   }
 

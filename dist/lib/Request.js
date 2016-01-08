@@ -43,6 +43,11 @@ var Request = exports.Request = function () {
       return this.response.body.join('') || '';
     }
   }, {
+    key: 'setRequestUrl',
+    value: function setRequestUrl(url) {
+      this.url = url;
+    }
+  }, {
     key: 'setRequestHeaders',
     value: function setRequestHeaders(headers) {
       this.request.headers = headers;
